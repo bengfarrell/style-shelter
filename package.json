@@ -1,5 +1,20 @@
 {
   "name": "style-shelter",
+  "email" : "ben@benfarrell.com",
+  "url" : "benfarrell.com",
+  "keywords": [
+    "CSS",
+    "constructible style sheets",
+    "constructable style sheets",
+    "shadow DOM",
+    "polyfill",
+    "web components",
+    "custom elements",
+    "CSSStyleSheet",
+    "stylesheet",
+    "polyfill",
+    "CSS modules"
+  ],
   "version": "0.1.0",
   "dependencies": {}
 }
