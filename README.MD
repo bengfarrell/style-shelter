@@ -22,9 +22,9 @@ Now, Web Component users can adopt a stylesheet that can live happily inside the
 of their very own Shadow DOM. The stylesheet is also not a clone of the original - it is a reference, which
 means that entire design systems aren't recreated in every component instance.
 
-#### Main usage:
+### Main usage
 
-StyleShelter.adopt accepts an array of URLs, as well as a default scope.
+**StyleShelter.adopt** accepts an array of URLs, as well as a default scope.
 Internally, your URLs will be turned into proper StyleSheet objects using 
 
 ```javascript
@@ -37,7 +37,7 @@ Once constructed, your URL will be loaded internally via the CSS @import directi
 sheet.replace(`@import url("${url}")`)
 ````
 
-As StyleShelter is a globally used module, it will cache loaded stylesheets using
+As Style Shelter is a globally used module, it will cache loaded stylesheets using
 a WeakMap. Subsequent calls to load the same CSS file will return the cached sheet object.
 
 ```javascript
@@ -53,7 +53,7 @@ to the same scope (like the shadowRoot). This is why the first parameter of the 
 an array of Objects as well as string URLs.
 
 An Object as part of this array can have keys of "url", and "scope". The following will adopt
-styles to the desired scopes for each CSS URL. StyleShelter users may mix URL strings and objects 
+styles to the desired scopes for each CSS URL. Style Shelter users may mix URL strings and objects 
 in this array.
 
  
@@ -81,7 +81,7 @@ is in the module and is the following:
 ```
 
 The **append** key is an array containing scopes. Style Shelter, by default, replaces
-the current array of Stylesheets with the one you specify using the new "adoptedStyleSheets" method.
+the current array of stylesheets with the one you specify using the new "adoptedStyleSheets" method.
 
 ```javascript
 scope.adoptedStyleSheets = [someStyleSheets];
@@ -104,7 +104,7 @@ the CSS takes time to load. This callback allows a user to take action on load. 
 wait until load until the style sheet is adopted, however right now there is no option to do so.
 
 The **onError** key is what you'd expect. If your stylesheet fails to load, it will produce an error. Also, if you fail
-to specify scope (either as default or in an object), **onError** will fire. By default, *onError** will console.warn with your error.
+to specify scope (either as default or in an object), **onError** will fire. By default, **onError** will console.warn with your error.
 
 ### Polyfilling
 Currently, Chrome is the only browser to support Constructable Stylesheets, the underlying feature behind Style Shelter. However, there is
@@ -139,7 +139,7 @@ CSS in a JS file.
 ```javascript
     css() {
         return `<style>
-                    aRule {
+                    selector {
                         display: flex;
                         position: relative;
                         align-items: center;
@@ -157,7 +157,7 @@ The problem however, is that CSS URLs are relative to your index.html page, so l
 StyleShelter.adopt(['./components/navigation/navigation.css'], this.shadowRoot);
 ```
 
-The above assumes the component knows your entire application structure, where "navigations" is the name of the component. Web Components should be more self-reliant than this.
+The above assumes the component knows your entire application structure, where "navigation" is the name of the component. Web Components should be more self-reliant than this.
 They should not be dependent on a defined application structure to function. A developer should just pop them in wherever they need 
 to be and just work.
 
@@ -171,3 +171,8 @@ StyleShelter.adopt([Navigation], this.shadowRoot);
 In fact - if CSS Modules work like JS modules do, where browser network requests aren't made for the same module imported from multiple places,
 it might negate the need for most of what Style Shelter does with caching the style sheets.
 
+### A Note on Using This Module
+
+While I will make this module available on NPM and Github, I'm more focused on the workflow approach rather than
+the code. I'm also not a huge fan of npm installing tiny scripts in my projects - and this one is a tiny ~130 lines of code. 
+Please, feel free to copy the JS and tweak it to your liking!
