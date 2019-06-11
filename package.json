@@ -2,6 +2,8 @@
   "name": "style-shelter",
   "email" : "ben@benfarrell.com",
   "url" : "benfarrell.com",
+  "main": "style-shelter.js",
+  "module": "style-shelter.js",
   "keywords": [
     "CSS",
     "constructible style sheets",
@@ -15,6 +17,6 @@
     "polyfill",
     "CSS modules"
   ],
-  "version": "0.1.1",
+  "version": "0.1.2",
   "dependencies": {}
 }
