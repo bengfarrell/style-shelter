@@ -45,6 +45,24 @@ import StyleShelter from './style-shelter.js';
 const styles = ['./css/docs.css', './components/app/app.css'];
 StyleShelter.adopt(styles, this.shadowRoot);
 ```
+If no scope is specified (```this.shadowRoot``` in the example above), unadopted CSSStyleSheets are returned
+to take further action. This can be great for a solution like LitElement where the static style getter
+performs a single adoption all at once and needs to use a single array containing CSS template literals and your stylesheets.
+
+The following, when your component scope is not specified, will allow the document to adopt stylesheets intended for it
+but simply return the rest of the stylesheets as unadopted
+
+```javascript
+import StyleShelter from './style-shelter.js';
+
+static get styles() {
+    const styles = ['./css/docs.css', './components/app/app.css'];
+    // note the below, we're wrapping stylesheets in another object to be 
+    // compatible with what LitElement expects
+    const unadopted = StyleShelter.adopt(styles).map( sheet => ({ styleSheet: sheet }));
+    return unadopted.concat(css`:host{ ... }`);    
+}
+```
 
 ### Mixed Adoption Scopes
 Especially in the case of stylesheets containing CSS Vars or even broad container styles that 

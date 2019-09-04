@@ -1,6 +1,4 @@
 export default {
-    get ERROR_NO_SCOPE_MESSAGE() { return 'No default scope/element offered to use for adopting stylesheet: '; },
-
     /**
      * get default configuration
      * @returns {{baseURI: string, theme: string}|*}
@@ -20,6 +18,7 @@ export default {
      * @param sheetObjects - array of CSS URLs or objects containing url and scope keys
      * @param defaultScope - scope to adopt CSS like document or shadow root
      * @param config
+     * @return unadopted array of stylesheet objects because scope was not found
      */
     adopt(sheetObjects, defaultScope, config) {
         if (!config) {
@@ -33,27 +32,36 @@ export default {
         }
 
         // Gather sheets, and resolve to CSSStyleSheet objects
+        const unadopted = [];
         sheetObjects.forEach( sheet => {
             if (typeof sheet === 'string') {
+                const stylesheet = this.getSheet(sheet, config.onSuccess, config.onError);
                 if (!defaultScope) {
-                    if (config.onError) { config.onError(this.ERROR_NO_SCOPE_MESSAGE + sheet); }
+                    // no default scope and no info about where to adopt, defer adoption and return unadopted sheets
+                    unadopted.push(stylesheet);
+                } else {
+                    // adopt to scope
+                    scopes.get(defaultScope).stylesheets.push(stylesheet);
                 }
-                scopes.get(defaultScope).stylesheets.push( this.getSheet(sheet, config.onSuccess, config.onError) );
             } else {
                 let scope;
                 if (sheet.scope) {
                     scope = sheet.scope;
                 } else if (defaultScope) {
                     scope = defaultScope;
-                } else {
-                    if (config.onError) { config.onError(this.ERROR_NO_SCOPE_MESSAGE + sheet); }
                 }
 
-                if (!scopes.has(scope)) {
-                    scopekeys.push(scope);
-                    scopes.set(scope, { stylesheets: [] });
+                const stylesheet = this.getSheet(sheet.url, config.onSuccess, config.onError);
+
+                if (scope) { // scope was found, adopt to scope here
+                    if (!scopes.has(scope)) {
+                        scopekeys.push(scope);
+                        scopes.set(scope, {stylesheets: []});
+                    }
+                    scopes.get(scope).stylesheets.push(stylesheet);
+                } else { // scope not found defer adoption, and return unadopted sheets
+                    unadopted.push(stylesheet)
                 }
-                scopes.get(scope).stylesheets.push( this.getSheet(sheet.url, config.onSuccess, config.onError) );
             }
         });
 
@@ -65,6 +73,8 @@ export default {
                 scope.adoptedStyleSheets = scopes.get(scope).stylesheets;
             }
         });
+
+        return unadopted
     },
 
     /**

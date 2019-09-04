@@ -1,7 +1,7 @@
 {
   "name": "style-shelter",
-  "email" : "ben@benfarrell.com",
-  "url" : "benfarrell.com",
+  "email": "ben@benfarrell.com",
+  "url": "benfarrell.com",
   "main": "style-shelter.js",
   "module": "style-shelter.js",
   "keywords": [
@@ -17,6 +17,6 @@
     "polyfill",
     "CSS modules"
   ],
-  "version": "0.1.2",
+  "version": "0.2.0",
   "dependencies": {}
 }
