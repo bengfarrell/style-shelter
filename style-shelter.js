@@ -118,18 +118,25 @@ export default {
             return this._dict.get(url);
         } else {
             const sheet = new CSSStyleSheet();
-            sheet.replace(`@import url("${url}")`)
-                .then(sheet => {
-                    if (callback) {
-                        callback.apply(this, [sheet]);
-                    }
+            fetch(url)
+                .then(response => response.text())
+                .then(data => {
+                    sheet.replace(data)
+                        .then(sheet => {
+                            if (callback) {
+                                callback.apply(this, [sheet]);
+                            }
+                        })
+                        .catch(err => {
+                            this._failed.set(url, err);
+                            if (error) {
+                                error.apply(this, [err]);
+                            }
+                            return sheet;
+                        });
                 })
-                .catch(err => {
-                    this._failed.set(url, err);
-                    if (error) {
-                        error.apply(this, [err]);
-                    }
-                    return sheet;
+                .catch((error) => {
+                    console.error('Error:', error);
                 });
 
             this._dict.set(url, sheet );

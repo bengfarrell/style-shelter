@@ -3,6 +3,18 @@
 
 ![alt text](adopt-a-style.png "Adopt-a-Style")
 
+Edit: Aug 2020
+--------------
+Uh-oh! Keal Jones kindly pointed out in this repo's issues, that CSS's @import no longer works
+with Constructable Stylesheets. I substituted a good ol' `fetch` call in it's place.
+As this logic was pretty centralized, the replacement was a snap. I didn't test much though,
+but given that they both do about the same thing with the URL (load it asynchronously), it seems
+like a pretty decent alternative. I just popped a demo.html and demo.css file in this repo to demonstrate
+for anyone interested.
+
+The hope is that this project is no longer needed once we can properly import CSS modules with JS. It's too bad
+the combo of @import and Constructable StyleSheets died first!
+
 Great for 
 + Design Systems
 + The Shadow DOM
@@ -31,10 +43,14 @@ Internally, your URLs will be turned into proper StyleSheet objects using
     new CSSStyleSheet();
 ```
 
-Once constructed, your URL will be loaded internally via the CSS @import directive
+Once constructed, your URL will be loaded internally via `fetch` api:
 
 ```javascript
-sheet.replace(`@import url("${url}")`)
+const sheet = new CSSStyleSheet();
+fetch(url)
+    .then(response => response.text())
+    .then(data => {
+        sheet.replace(data) ....
 ````
 
 As Style Shelter is a globally used module, it will cache loaded stylesheets using
@@ -117,7 +133,7 @@ scope.adoptedStyleSheets = scope.adoptedStyleSheets.concat([someStyleSheets]);
 
 The **onSuccess** key is a success callback when the stylesheet has been successfully loaded.
 With Constructable Style Sheets, CSS can be loaded synchronously, however, Style Shelter loads them
-asynchronously because it uses the @import CSS directive. Though the newly constructed sheet comes back synchronously,
+asynchronously because it uses the `fetch` api for loading CSS as text. Though the newly constructed sheet comes back synchronously,
 the CSS takes time to load. This callback allows a user to take action on load. One todo for Style Shelter could be to 
 wait until load until the style sheet is adopted, however right now there is no option to do so.
 
